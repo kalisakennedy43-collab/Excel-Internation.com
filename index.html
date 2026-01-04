@@ -1,0 +1,1457 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel School Rwanda - Excellence in Education</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .hero-pattern {
+      background-color: #1e40af;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .loading-spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #1e40af;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      color: white;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .toast.success { background-color: #10b981; }
+    .toast.error { background-color: #ef4444; }
+    
+    .modal-backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto bg-gray-50"><!-- Navigation -->
+   <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex justify-between items-center h-16">
+      <div class="flex items-center space-x-3">
+       <div class="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center"><i class="fas fa-graduation-cap text-white text-xl"></i>
+       </div>
+       <div>
+        <h1 class="text-xl font-bold text-gray-900" id="nav-school-name">Excel School Rwanda</h1>
+        <p class="text-xs text-gray-600" id="nav-tagline">Excellence in Education</p>
+       </div>
+      </div>
+      <div class="hidden md:flex items-center space-x-6"><button onclick="showPage('home')" class="nav-link text-gray-700 hover:text-blue-700 font-medium">Home</button> <button onclick="showPage('about')" class="nav-link text-gray-700 hover:text-blue-700 font-medium">About</button> <button onclick="showPage('academics')" class="nav-link text-gray-700 hover:text-blue-700 font-medium">Academics</button> <button onclick="showPage('news')" class="nav-link text-gray-700 hover:text-blue-700 font-medium">News</button> <button onclick="showPage('contact')" class="nav-link text-gray-700 hover:text-blue-700 font-medium">Contact</button> <button onclick="showPage('login')" class="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">Login</button>
+      </div><button onclick="toggleMobileMenu()" class="md:hidden text-gray-700"> <i class="fas fa-bars text-2xl"></i> </button>
+     </div>
+     <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2"><button onclick="showPage('home'); toggleMobileMenu()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Home</button> <button onclick="showPage('about'); toggleMobileMenu()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">About</button> <button onclick="showPage('academics'); toggleMobileMenu()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Academics</button> <button onclick="showPage('news'); toggleMobileMenu()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">News</button> <button onclick="showPage('contact'); toggleMobileMenu()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Contact</button> <button onclick="showPage('login'); toggleMobileMenu()" class="block w-full text-left px-4 py-2 bg-blue-700 text-white hover:bg-blue-800">Login</button>
+     </div>
+    </div>
+   </nav><!-- Page Content Container -->
+   <div id="page-content"></div><!-- Footer -->
+   <footer class="bg-gray-900 text-white mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+       <h3 class="text-lg font-bold mb-4" id="footer-school-name">Excel School Rwanda</h3>
+       <p class="text-gray-400 mb-4">Providing quality primary education from P1 to P6 in Rwanda.</p>
+       <div class="flex space-x-4"><a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook text-xl"></i></a> <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a> <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+       <ul class="space-y-2">
+        <li><button onclick="showPage('home')" class="text-gray-400 hover:text-white transition">Home</button></li>
+        <li><button onclick="showPage('about')" class="text-gray-400 hover:text-white transition">About Us</button></li>
+        <li><button onclick="showPage('academics')" class="text-gray-400 hover:text-white transition">Academics</button></li>
+        <li><button onclick="showPage('news')" class="text-gray-400 hover:text-white transition">News</button></li>
+        <li><button onclick="showPage('contact')" class="text-gray-400 hover:text-white transition">Contact</button></li>
+       </ul>
+      </div>
+      <div>
+       <h3 class="text-lg font-bold mb-4">Contact Information</h3>
+       <ul class="space-y-2 text-gray-400">
+        <li><i class="fas fa-map-marker-alt mr-2"></i><span id="footer-location">FJWJ+8XG, Nyakinama, Rwanda</span></li>
+        <li><i class="fas fa-phone mr-2"></i><span id="footer-phone">0788 305 797</span></li>
+        <li><i class="fas fa-clock mr-2"></i><span id="footer-hours">Open – Closes at 5:30 PM</span></li>
+       </ul>
+      </div>
+     </div>
+     <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+      <p>© 2024 Excel School Rwanda. All rights reserved. | Website: excelschool.rw</p>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    const defaultConfig = {
+      school_name: "Excel School Rwanda",
+      school_tagline: "Excellence in Education",
+      contact_phone: "0788 305 797",
+      school_hours: "Open – Closes at 5:30 PM",
+      location: "FJWJ+8XG, Nyakinama, Rwanda",
+      welcome_heading: "Welcome to Excel School Rwanda",
+      welcome_text: "Providing quality education from P1 to P6",
+      primary_color: "#1e40af",
+      secondary_color: "#ffffff",
+      text_color: "#111827",
+      accent_color: "#3b82f6",
+      surface_color: "#f9fafb"
+    };
+
+    let currentUser = null;
+    let allData = [];
+    let recordCount = 0;
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allData = data;
+        recordCount = data.length;
+        
+        if (currentUser) {
+          const page = document.getElementById('page-content').getAttribute('data-current-page');
+          if (page === 'admin' || page === 'teacher' || page === 'student' || page === 'parent') {
+            showPage(page);
+          } else if (page === 'news') {
+            renderNewsPage();
+          }
+        }
+      }
+    };
+
+    async function onConfigChange(config) {
+      const schoolName = config.school_name || defaultConfig.school_name;
+      const schoolTagline = config.school_tagline || defaultConfig.school_tagline;
+      const contactPhone = config.contact_phone || defaultConfig.contact_phone;
+      const schoolHours = config.school_hours || defaultConfig.school_hours;
+      const location = config.location || defaultConfig.location;
+      const welcomeHeading = config.welcome_heading || defaultConfig.welcome_heading;
+      const welcomeText = config.welcome_text || defaultConfig.welcome_text;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const accentColor = config.accent_color || defaultConfig.accent_color;
+      
+      document.getElementById('nav-school-name').textContent = schoolName;
+      document.getElementById('nav-tagline').textContent = schoolTagline;
+      document.getElementById('footer-school-name').textContent = schoolName;
+      document.getElementById('footer-location').textContent = location;
+      document.getElementById('footer-phone').textContent = contactPhone;
+      document.getElementById('footer-hours').textContent = schoolHours;
+      
+      const heroPattern = document.querySelector('.hero-pattern');
+      if (heroPattern) {
+        heroPattern.style.backgroundColor = primaryColor;
+      }
+      
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.style.color = textColor;
+      });
+      
+      const page = document.getElementById('page-content').getAttribute('data-current-page');
+      if (page === 'home') {
+        renderHomePage();
+      }
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>${message}`;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    function showPage(page) {
+      const content = document.getElementById('page-content');
+      content.setAttribute('data-current-page', page);
+      
+      switch(page) {
+        case 'home': renderHomePage(); break;
+        case 'about': renderAboutPage(); break;
+        case 'academics': renderAcademicsPage(); break;
+        case 'news': renderNewsPage(); break;
+        case 'contact': renderContactPage(); break;
+        case 'login': renderLoginPage(); break;
+        case 'admin': renderAdminDashboard(); break;
+        case 'teacher': renderTeacherDashboard(); break;
+        case 'student': renderStudentDashboard(); break;
+        case 'parent': renderParentDashboard(); break;
+        default: renderHomePage();
+      }
+      
+      window.scrollTo(0, 0);
+    }
+
+    function renderHomePage() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const welcomeHeading = config.welcome_heading || defaultConfig.welcome_heading;
+      const welcomeText = config.welcome_text || defaultConfig.welcome_text;
+      const schoolHours = config.school_hours || defaultConfig.school_hours;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      
+      document.getElementById('page-content').innerHTML = `
+        <div class="hero-pattern text-white py-20">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div class="text-center md:text-left">
+                <h1 class="text-5xl font-bold mb-4">${welcomeHeading}</h1>
+                <p class="text-xl mb-8">${welcomeText}</p>
+                <div class="flex justify-center md:justify-start items-center space-x-4 mb-6">
+                  <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                    <i class="fas fa-clock mr-2"></i>${schoolHours}
+                  </span>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                  <button onclick="showPage('about')" class="bg-white text-blue-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">Learn More</button>
+                  <button onclick="showPage('contact')" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-700 transition">Contact Us</button>
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <svg viewBox="0 0 400 300" class="w-full max-w-md">
+                  <rect x="50" y="80" width="300" height="180" rx="10" fill="#ffffff" opacity="0.95"/>
+                  <rect x="70" y="100" width="80" height="60" rx="5" fill="#3b82f6"/>
+                  <rect x="160" y="100" width="80" height="60" rx="5" fill="#10b981"/>
+                  <rect x="250" y="100" width="80" height="60" rx="5" fill="#f59e0b"/>
+                  <circle cx="110" cy="200" r="25" fill="#1e40af"/>
+                  <circle cx="200" cy="200" r="25" fill="#1e40af"/>
+                  <circle cx="290" cy="200" r="25" fill="#1e40af"/>
+                  <path d="M110 195 L110 205 M105 200 L115 200" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M200 195 L200 205 M195 200 L205 200" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M290 195 L290 205 M285 200 L295 200" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="200,20 220,60 180,60" fill="#fbbf24"/>
+                  <rect x="190" y="60" width="20" height="20" fill="#fbbf24"/>
+                  <text x="200" y="45" font-size="24" fill="#1e40af" text-anchor="middle" font-weight="bold">★</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-lg card-hover text-center">
+              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-book-open text-3xl text-blue-700"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3 text-gray-900">Quality Education</h3>
+              <p class="text-gray-600">Comprehensive curriculum from P1 to P6 with experienced teachers.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg card-hover text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-users text-3xl text-green-700"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3 text-gray-900">Experienced Staff</h3>
+              <p class="text-gray-600">Dedicated teachers committed to student success and development.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg card-hover text-center">
+              <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-trophy text-3xl text-purple-700"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3 text-gray-900">Excellence Focus</h3>
+              <p class="text-gray-600">Striving for academic excellence and character development.</p>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl p-12 text-white text-center">
+            <h2 class="text-3xl font-bold mb-4">Join Our School Community</h2>
+            <p class="text-lg mb-6">Enroll your child in a nurturing environment focused on academic excellence</p>
+            <button onclick="showPage('contact')" class="bg-white text-blue-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+              Enroll Now
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAboutPage() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const schoolName = config.school_name || defaultConfig.school_name;
+      const location = config.location || defaultConfig.location;
+      
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h1 class="text-4xl font-bold text-gray-900 mb-8">About ${schoolName}</h1>
+          
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Our Mission</h2>
+                <p class="text-gray-700 leading-relaxed mb-6">
+                  At Excel School Rwanda, we are committed to providing high-quality primary education that nurtures young minds 
+                  and prepares students for future academic success. Our mission is to create a supportive learning environment 
+                  where every child can reach their full potential.
+                </p>
+                
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Our Vision</h2>
+                <p class="text-gray-700 leading-relaxed mb-6">
+                  To be Rwanda's leading primary school, recognized for academic excellence, character development, and 
+                  innovative teaching methods that prepare students for the challenges of tomorrow.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Location</h2>
+                <p class="text-gray-700 leading-relaxed">
+                  <i class="fas fa-map-marker-alt mr-2 text-blue-700"></i>${location}
+                </p>
+              </div>
+              <div class="flex justify-center">
+                <svg viewBox="0 0 400 350" class="w-full max-w-sm">
+                  <!-- Sky -->
+                  <rect x="0" y="0" width="400" height="200" fill="#dbeafe"/>
+                  <!-- Sun -->
+                  <circle cx="350" cy="50" r="30" fill="#fbbf24"/>
+                  <!-- Clouds -->
+                  <ellipse cx="80" cy="60" rx="40" ry="20" fill="#ffffff" opacity="0.8"/>
+                  <ellipse cx="100" cy="55" rx="35" ry="18" fill="#ffffff" opacity="0.8"/>
+                  <!-- Ground -->
+                  <rect x="0" y="200" width="400" height="150" fill="#86efac"/>
+                  <!-- School Building -->
+                  <rect x="100" y="120" width="200" height="120" fill="#dc2626"/>
+                  <!-- Roof -->
+                  <polygon points="100,120 200,60 300,120" fill="#991b1b"/>
+                  <!-- Door -->
+                  <rect x="180" y="180" width="40" height="60" fill="#92400e"/>
+                  <circle cx="210" cy="210" r="3" fill="#fbbf24"/>
+                  <!-- Windows -->
+                  <rect x="120" y="140" width="30" height="30" fill="#60a5fa"/>
+                  <rect x="250" y="140" width="30" height="30" fill="#60a5fa"/>
+                  <line x1="135" y1="140" x2="135" y2="170" stroke="#1e40af" stroke-width="2"/>
+                  <line x1="120" y1="155" x2="150" y2="155" stroke="#1e40af" stroke-width="2"/>
+                  <line x1="265" y1="140" x2="265" y2="170" stroke="#1e40af" stroke-width="2"/>
+                  <line x1="250" y1="155" x2="280" y2="155" stroke="#1e40af" stroke-width="2"/>
+                  <!-- Flag pole -->
+                  <rect x="195" y="40" width="3" height="80" fill="#374151"/>
+                  <rect x="198" y="45" width="25" height="15" fill="#1e40af"/>
+                  <!-- Trees -->
+                  <rect x="50" y="180" width="15" height="40" fill="#92400e"/>
+                  <circle cx="57" cy="170" r="25" fill="#22c55e"/>
+                  <rect x="335" y="180" width="15" height="40" fill="#92400e"/>
+                  <circle cx="342" cy="170" r="25" fill="#22c55e"/>
+                  <!-- Pathway -->
+                  <rect x="195" y="240" width="50" height="110" fill="#9ca3af"/>
+                  <!-- Children figures -->
+                  <circle cx="150" cy="250" r="8" fill="#fbbf24"/>
+                  <rect x="146" y="258" width="8" height="15" fill="#3b82f6"/>
+                  <circle cx="250" cy="250" r="8" fill="#fbbf24"/>
+                  <rect x="246" y="258" width="8" height="15" fill="#ec4899"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+              <h3 class="text-xl font-bold text-gray-900 mb-4">Our Values</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-green-600 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Academic Excellence</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-green-600 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Character Development</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-green-600 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Innovation in Teaching</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-green-600 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Community Engagement</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+              <h3 class="text-xl font-bold text-gray-900 mb-4">Why Choose Us</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <i class="fas fa-star text-yellow-500 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Experienced and dedicated teachers</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-star text-yellow-500 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Modern teaching facilities</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-star text-yellow-500 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Safe and nurturing environment</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-star text-yellow-500 mt-1 mr-3"></i>
+                  <span class="text-gray-700">Strong parent-teacher partnership</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAcademicsPage() {
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h1 class="text-4xl font-bold text-gray-900 mb-8">Academic Programs</h1>
+          
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <p class="text-gray-700 leading-relaxed text-lg">
+                  Excel School Rwanda offers a comprehensive primary education program from Primary 1 (P1) to Primary 6 (P6). 
+                  Our curriculum is designed to build strong foundations in core subjects while fostering creativity, 
+                  critical thinking, and character development.
+                </p>
+              </div>
+              <div class="flex justify-center">
+                <svg viewBox="0 0 400 300" class="w-full max-w-sm">
+                  <!-- Classroom wall -->
+                  <rect x="0" y="0" width="400" height="300" fill="#fef3c7"/>
+                  <!-- Blackboard -->
+                  <rect x="50" y="40" width="300" height="140" fill="#1f2937" rx="5"/>
+                  <rect x="55" y="45" width="290" height="130" fill="#374151" rx="3"/>
+                  <!-- Math on blackboard -->
+                  <text x="200" y="80" font-size="24" fill="#ffffff" text-anchor="middle" font-weight="bold">2 + 2 = 4</text>
+                  <text x="200" y="115" font-size="20" fill="#ffffff" text-anchor="middle">A B C</text>
+                  <text x="200" y="145" font-size="18" fill="#10b981" text-anchor="middle">⭐ Excellence ⭐</text>
+                  <!-- Chalk tray -->
+                  <rect x="50" y="180" width="300" height="8" fill="#92400e"/>
+                  <!-- Desk -->
+                  <rect x="150" y="220" width="100" height="60" fill="#b45309" rx="5"/>
+                  <rect x="155" y="225" width="90" height="50" fill="#d97706"/>
+                  <!-- Books on desk -->
+                  <rect x="170" y="210" width="15" height="20" fill="#3b82f6"/>
+                  <rect x="190" y="210" width="15" height="20" fill="#ef4444"/>
+                  <rect x="210" y="210" width="15" height="20" fill="#22c55e"/>
+                  <!-- Apple -->
+                  <circle cx="240" cy="220" r="8" fill="#ef4444"/>
+                  <rect x="239" y="212" width="2" height="5" fill="#92400e"/>
+                  <!-- Desk legs -->
+                  <rect x="160" y="275" width="8" height="25" fill="#92400e"/>
+                  <rect x="232" y="275" width="8" height="25" fill="#92400e"/>
+                  <!-- Globe -->
+                  <circle cx="100" cy="250" r="20" fill="#60a5fa"/>
+                  <ellipse cx="100" cy="250" rx="20" ry="8" fill="none" stroke="#1e40af" stroke-width="2"/>
+                  <line x1="100" y1="230" x2="100" y2="270" stroke="#1e40af" stroke-width="2"/>
+                  <!-- Pencils in holder -->
+                  <rect x="315" y="235" width="30" height="40" fill="#f59e0b" rx="3"/>
+                  <rect x="320" y="225" width="4" height="20" fill="#fbbf24"/>
+                  <rect x="328" y="220" width="4" height="25" fill="#3b82f6"/>
+                  <rect x="336" y="228" width="4" height="17" fill="#ef4444"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${['P1', 'P2', 'P3', 'P4', 'P5', 'P6'].map(level => `
+              <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 bg-blue-700 rounded-lg flex items-center justify-center mr-4">
+                    <span class="text-white font-bold text-lg">${level}</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-gray-900">Primary ${level.slice(1)}</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Comprehensive curriculum covering all essential subjects with age-appropriate learning materials.
+                </p>
+                <button onclick="showClassDetails('${level}')" class="text-blue-700 font-semibold hover:text-blue-900">
+                  View Details <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="mt-12 bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl p-8 text-white">
+            <h2 class="text-2xl font-bold mb-4">Core Subjects</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="text-center">
+                <i class="fas fa-book text-3xl mb-2"></i>
+                <p>English</p>
+              </div>
+              <div class="text-center">
+                <i class="fas fa-calculator text-3xl mb-2"></i>
+                <p>Mathematics</p>
+              </div>
+              <div class="text-center">
+                <i class="fas fa-flask text-3xl mb-2"></i>
+                <p>Science</p>
+              </div>
+              <div class="text-center">
+                <i class="fas fa-globe text-3xl mb-2"></i>
+                <p>Social Studies</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showClassDetails(level) {
+      showToast(`Class details for ${level} - Login as a teacher or student to access materials`, 'success');
+    }
+
+    function renderNewsPage() {
+      const newsItems = allData.filter(item => item.type === 'news');
+      
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h1 class="text-4xl font-bold text-gray-900 mb-8">School News & Announcements</h1>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            ${newsItems.length > 0 ? newsItems.map(item => `
+              <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                <div class="bg-blue-700 h-48 flex items-center justify-center">
+                  <i class="fas fa-newspaper text-6xl text-white"></i>
+                </div>
+                <div class="p-6">
+                  <div class="text-sm text-gray-500 mb-2">${new Date(item.date).toLocaleDateString()}</div>
+                  <h3 class="text-xl font-bold text-gray-900 mb-3">${item.title}</h3>
+                  <p class="text-gray-600 mb-4">${item.content.substring(0, 150)}...</p>
+                  <button onclick="viewNewsItem('${item.id}')" class="text-blue-700 font-semibold hover:text-blue-900">
+                    Read More <i class="fas fa-arrow-right ml-1"></i>
+                  </button>
+                </div>
+              </div>
+            `).join('') : `
+              <div class="col-span-full text-center py-12">
+                <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg">No news articles available yet.</p>
+                <p class="text-gray-400">Check back later for updates!</p>
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function viewNewsItem(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <button onclick="showPage('news')" class="text-blue-700 font-semibold mb-6 hover:text-blue-900">
+            <i class="fas fa-arrow-left mr-2"></i>Back to News
+          </button>
+          
+          <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="text-sm text-gray-500 mb-2">${new Date(item.date).toLocaleDateString()}</div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-6">${item.title}</h1>
+            <div class="text-gray-700 leading-relaxed whitespace-pre-line">${item.content}</div>
+            <div class="mt-8 pt-6 border-t border-gray-200">
+              <p class="text-gray-600"><strong>Posted by:</strong> ${item.author}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderContactPage() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const contactPhone = config.contact_phone || defaultConfig.contact_phone;
+      const location = config.location || defaultConfig.location;
+      const schoolHours = config.school_hours || defaultConfig.school_hours;
+      
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h1 class="text-4xl font-bold text-gray-900 mb-8">Contact Us</h1>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+              
+              <form onsubmit="handleContactForm(event)" id="contact-form">
+                <div class="mb-4">
+                  <label for="name" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                  <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+                </div>
+                
+                <div class="mb-4">
+                  <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                  <input type="email" id="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+                </div>
+                
+                <div class="mb-4">
+                  <label for="phone" class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+                  <input type="tel" id="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+                </div>
+                
+                <div class="mb-6">
+                  <label for="message" class="block text-gray-700 font-semibold mb-2">Message</label>
+                  <textarea id="message" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700"></textarea>
+                </div>
+                
+                <button type="submit" id="submit-btn" class="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition">
+                  Send Message
+                </button>
+              </form>
+            </div>
+
+            <div>
+              <div class="bg-white rounded-xl shadow-lg p-8 mb-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Contact Information</h3>
+                <div class="space-y-4">
+                  <div class="flex items-start">
+                    <i class="fas fa-map-marker-alt text-blue-700 mt-1 mr-3"></i>
+                    <div>
+                      <p class="font-semibold text-gray-900">Address</p>
+                      <p class="text-gray-600">${location}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-start">
+                    <i class="fas fa-phone text-blue-700 mt-1 mr-3"></i>
+                    <div>
+                      <p class="font-semibold text-gray-900">Phone</p>
+                      <p class="text-gray-600">${contactPhone}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-start">
+                    <i class="fas fa-clock text-blue-700 mt-1 mr-3"></i>
+                    <div>
+                      <p class="font-semibold text-gray-900">School Hours</p>
+                      <p class="text-gray-600">${schoolHours}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
+                <h3 class="text-xl font-bold mb-4">Quick Contact</h3>
+                <a href="https://wa.me/250788305797" target="_blank" rel="noopener noreferrer" class="block bg-white text-green-700 text-center py-3 rounded-lg font-semibold hover:bg-gray-100 transition mb-3">
+                  <i class="fab fa-whatsapp mr-2"></i>WhatsApp Us
+                </a>
+                <a href="tel:+250788305797" class="block bg-white text-green-700 text-center py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                  <i class="fas fa-phone mr-2"></i>Call Now
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleContactForm(event) {
+      event.preventDefault();
+      
+      if (recordCount >= 999) {
+        showToast('Message limit reached. Please contact us directly via phone or WhatsApp.', 'error');
+        return;
+      }
+      
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+      
+      const formData = {
+        id: Date.now().toString(),
+        type: 'contact',
+        title: document.getElementById('name').value,
+        content: document.getElementById('message').value,
+        author: document.getElementById('email').value,
+        date: new Date().toISOString(),
+        category: document.getElementById('phone').value
+      };
+      
+      const result = await window.dataSdk.create(formData);
+      
+      if (result.isOk) {
+        showToast('Message sent successfully! We will contact you soon.', 'success');
+        document.getElementById('contact-form').reset();
+      } else {
+        showToast('Failed to send message. Please try again.', 'error');
+      }
+      
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send Message';
+    }
+
+    function renderLoginPage() {
+      document.getElementById('page-content').innerHTML = `
+        <div class="min-h-screen flex items-center justify-center py-16 px-4">
+          <div class="max-w-md w-full bg-white rounded-xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+              <div class="w-20 h-20 bg-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-user-lock text-white text-3xl"></i>
+              </div>
+              <h2 class="text-3xl font-bold text-gray-900">Login to Portal</h2>
+              <p class="text-gray-600 mt-2">Access your account dashboard</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)">
+              <div class="mb-4">
+                <label for="role" class="block text-gray-700 font-semibold mb-2">Select Role</label>
+                <select id="role" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+                  <option value="">-- Select Role --</option>
+                  <option value="admin">Administrator</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="student">Student</option>
+                  <option value="parent">Parent</option>
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
+                <input type="text" id="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+              </div>
+
+              <div class="mb-6">
+                <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+              </div>
+
+              <button type="submit" class="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition">
+                Login
+              </button>
+            </form>
+
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+              <p class="text-sm text-gray-700"><strong>Demo Credentials:</strong></p>
+              <p class="text-sm text-gray-600">Admin: admin / admin123</p>
+              <p class="text-sm text-gray-600">Teacher: teacher / teacher123</p>
+              <p class="text-sm text-gray-600">Student: student / student123</p>
+              <p class="text-sm text-gray-600">Parent: parent / parent123</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const role = document.getElementById('role').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      const validCredentials = {
+        admin: { username: 'admin', password: 'admin123' },
+        teacher: { username: 'teacher', password: 'teacher123' },
+        student: { username: 'student', password: 'student123' },
+        parent: { username: 'parent', password: 'parent123' }
+      };
+      
+      if (validCredentials[role] && 
+          validCredentials[role].username === username && 
+          validCredentials[role].password === password) {
+        currentUser = { role, username };
+        showToast(`Welcome ${role}!`, 'success');
+        showPage(role);
+      } else {
+        showToast('Invalid credentials. Please try again.', 'error');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      showToast('Logged out successfully', 'success');
+      showPage('home');
+    }
+
+    function renderAdminDashboard() {
+      const newsItems = allData.filter(item => item.type === 'news');
+      const contactMessages = allData.filter(item => item.type === 'contact');
+      
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm">Total Posts</p>
+                  <p class="text-3xl font-bold text-gray-900">${allData.length}</p>
+                </div>
+                <i class="fas fa-file-alt text-4xl text-blue-700"></i>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm">News Articles</p>
+                  <p class="text-3xl font-bold text-gray-900">${newsItems.length}</p>
+                </div>
+                <i class="fas fa-newspaper text-4xl text-green-700"></i>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm">Messages</p>
+                  <p class="text-3xl font-bold text-gray-900">${contactMessages.length}</p>
+                </div>
+                <i class="fas fa-envelope text-4xl text-purple-700"></i>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm">Storage</p>
+                  <p class="text-3xl font-bold text-gray-900">${recordCount}/999</p>
+                </div>
+                <i class="fas fa-database text-4xl text-orange-700"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">Quick Actions</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button onclick="showAddNewsForm()" class="bg-blue-700 text-white p-4 rounded-lg hover:bg-blue-800 transition">
+                <i class="fas fa-plus-circle mr-2"></i>Add News Article
+              </button>
+              <button onclick="viewAllMessages()" class="bg-green-700 text-white p-4 rounded-lg hover:bg-green-800 transition">
+                <i class="fas fa-envelope-open mr-2"></i>View Messages
+              </button>
+              <button onclick="manageContent()" class="bg-purple-700 text-white p-4 rounded-lg hover:bg-purple-800 transition">
+                <i class="fas fa-cog mr-2"></i>Manage Content
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent News Articles</h2>
+            <div class="space-y-4">
+              ${newsItems.length > 0 ? newsItems.slice(0, 5).map(item => `
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                  <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900">${item.title}</h3>
+                    <p class="text-sm text-gray-600">${new Date(item.date).toLocaleDateString()}</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="editNewsItem('${item.id}')" class="text-blue-700 hover:text-blue-900">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteNewsItem('${item.id}')" class="text-red-600 hover:text-red-800">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('') : '<p class="text-gray-500 text-center py-8">No news articles yet</p>'}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showAddNewsForm() {
+      if (recordCount >= 999) {
+        showToast('Storage limit reached (999 records). Please delete some content first.', 'error');
+        return;
+      }
+      
+      const modalHTML = `
+        <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" onclick="if(event.target.id==='modal') closeModal()">
+          <div class="bg-white rounded-xl shadow-2xl p-8 max-w-2xl w-full mx-4" onclick="event.stopPropagation()">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Add News Article</h2>
+            <form onsubmit="handleAddNews(event)">
+              <div class="mb-4">
+                <label for="news-title" class="block text-gray-700 font-semibold mb-2">Title</label>
+                <input type="text" id="news-title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+              </div>
+              <div class="mb-4">
+                <label for="news-content" class="block text-gray-700 font-semibold mb-2">Content</label>
+                <textarea id="news-content" rows="6" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700"></textarea>
+              </div>
+              <div class="flex justify-end space-x-4">
+                <button type="button" onclick="closeModal()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                  Cancel
+                </button>
+                <button type="submit" id="add-news-btn" class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
+                  Publish
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async function handleAddNews(event) {
+      event.preventDefault();
+      
+      const btn = document.getElementById('add-news-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+      
+      const newsData = {
+        id: Date.now().toString(),
+        type: 'news',
+        title: document.getElementById('news-title').value,
+        content: document.getElementById('news-content').value,
+        author: 'Admin',
+        date: new Date().toISOString(),
+        category: 'general'
+      };
+      
+      const result = await window.dataSdk.create(newsData);
+      
+      if (result.isOk) {
+        showToast('News article published successfully!', 'success');
+        closeModal();
+      } else {
+        showToast('Failed to publish article. Please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Publish';
+      }
+    }
+
+    function editNewsItem(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      
+      const modalHTML = `
+        <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" onclick="if(event.target.id==='modal') closeModal()">
+          <div class="bg-white rounded-xl shadow-2xl p-8 max-w-2xl w-full mx-4" onclick="event.stopPropagation()">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit News Article</h2>
+            <form onsubmit="handleEditNews(event, '${id}')">
+              <div class="mb-4">
+                <label for="edit-news-title" class="block text-gray-700 font-semibold mb-2">Title</label>
+                <input type="text" id="edit-news-title" value="${item.title}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">
+              </div>
+              <div class="mb-4">
+                <label for="edit-news-content" class="block text-gray-700 font-semibold mb-2">Content</label>
+                <textarea id="edit-news-content" rows="6" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700">${item.content}</textarea>
+              </div>
+              <div class="flex justify-end space-x-4">
+                <button type="button" onclick="closeModal()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                  Cancel
+                </button>
+                <button type="submit" id="edit-news-btn" class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async function handleEditNews(event, id) {
+      event.preventDefault();
+      
+      const btn = document.getElementById('edit-news-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+      
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      
+      item.title = document.getElementById('edit-news-title').value;
+      item.content = document.getElementById('edit-news-content').value;
+      
+      const result = await window.dataSdk.update(item);
+      
+      if (result.isOk) {
+        showToast('News article updated successfully!', 'success');
+        closeModal();
+      } else {
+        showToast('Failed to update article. Please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Update';
+      }
+    }
+
+    function deleteNewsItem(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      
+      const modalHTML = `
+        <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" onclick="if(event.target.id==='modal') closeModal()">
+          <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4" onclick="event.stopPropagation()">
+            <div class="text-center mb-6">
+              <i class="fas fa-exclamation-triangle text-6xl text-red-600 mb-4"></i>
+              <h2 class="text-2xl font-bold text-gray-900">Confirm Delete</h2>
+              <p class="text-gray-600 mt-2">Are you sure you want to delete "${item.title}"?</p>
+            </div>
+            <div class="flex justify-center space-x-4">
+              <button onclick="closeModal()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                Cancel
+              </button>
+              <button onclick="confirmDeleteNews('${id}')" id="delete-news-btn" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async function confirmDeleteNews(id) {
+      const btn = document.getElementById('delete-news-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+      
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      
+      const result = await window.dataSdk.delete(item);
+      
+      if (result.isOk) {
+        showToast('News article deleted successfully!', 'success');
+        closeModal();
+      } else {
+        showToast('Failed to delete article. Please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Delete';
+      }
+    }
+
+    function viewAllMessages() {
+      const messages = allData.filter(item => item.type === 'contact');
+      
+      const modalHTML = `
+        <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop overflow-auto" onclick="if(event.target.id==='modal') closeModal()">
+          <div class="bg-white rounded-xl shadow-2xl p-8 max-w-4xl w-full mx-4 my-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">Contact Messages</h2>
+              <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
+              </button>
+            </div>
+            <div class="space-y-4 max-h-96 overflow-y-auto">
+              ${messages.length > 0 ? messages.map(msg => `
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 class="font-semibold text-gray-900">${msg.title}</h3>
+                      <p class="text-sm text-gray-600">${msg.author} • ${msg.category}</p>
+                    </div>
+                    <span class="text-xs text-gray-500">${new Date(msg.date).toLocaleDateString()}</span>
+                  </div>
+                  <p class="text-gray-700">${msg.content}</p>
+                  <button onclick="deleteMessage('${msg.id}')" class="mt-2 text-red-600 hover:text-red-800 text-sm">
+                    <i class="fas fa-trash mr-1"></i>Delete
+                  </button>
+                </div>
+              `).join('') : '<p class="text-gray-500 text-center py-8">No messages yet</p>'}
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async function deleteMessage(id) {
+      const item = allData.find(d => d.id === id);
+      if (!item) return;
+      
+      const result = await window.dataSdk.delete(item);
+      
+      if (result.isOk) {
+        showToast('Message deleted successfully!', 'success');
+        closeModal();
+        setTimeout(() => viewAllMessages(), 100);
+      } else {
+        showToast('Failed to delete message. Please try again.', 'error');
+      }
+    }
+
+    function manageContent() {
+      showToast('Content management features - Create, edit, and delete all school content here', 'success');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      if (modal) modal.remove();
+    }
+
+    function renderTeacherDashboard() {
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
+            <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">My Classes</h3>
+              <p class="text-3xl font-bold text-blue-700">6</p>
+              <p class="text-sm text-gray-600">P1 to P6</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Students</h3>
+              <p class="text-3xl font-bold text-green-700">180</p>
+              <p class="text-sm text-gray-600">Total enrolled</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Assignments</h3>
+              <p class="text-3xl font-bold text-purple-700">12</p>
+              <p class="text-sm text-gray-600">Active</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button onclick="uploadNotes()" class="bg-blue-700 text-white p-4 rounded-lg hover:bg-blue-800 transition">
+                <i class="fas fa-upload mr-2"></i>Upload Notes
+              </button>
+              <button onclick="createHomework()" class="bg-green-700 text-white p-4 rounded-lg hover:bg-green-800 transition">
+                <i class="fas fa-tasks mr-2"></i>Create Homework
+              </button>
+              <button onclick="postAnnouncement()" class="bg-purple-700 text-white p-4 rounded-lg hover:bg-purple-800 transition">
+                <i class="fas fa-bullhorn mr-2"></i>Post Announcement
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">My Classes</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              ${['P1', 'P2', 'P3', 'P4', 'P5', 'P6'].map(level => `
+                <button onclick="viewClass('${level}')" class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl hover:from-blue-700 hover:to-blue-900 transition">
+                  <i class="fas fa-chalkboard-teacher text-3xl mb-2"></i>
+                  <p class="font-bold text-lg">Class ${level}</p>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function uploadNotes() {
+      showToast('Notes upload feature - Teachers can upload study materials for students', 'success');
+    }
+
+    function createHomework() {
+      showToast('Homework creation feature - Teachers can assign and manage homework', 'success');
+    }
+
+    function postAnnouncement() {
+      showToast('Announcement feature - Teachers can post class announcements', 'success');
+    }
+
+    function viewClass(level) {
+      showToast(`Viewing ${level} class management - Access students, notes, and assignments`, 'success');
+    }
+
+    function renderStudentDashboard() {
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Student Dashboard</h1>
+            <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">My Class</h3>
+              <p class="text-3xl font-bold text-blue-700">P5</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Homework</h3>
+              <p class="text-3xl font-bold text-orange-700">5</p>
+              <p class="text-sm text-gray-600">Pending</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Grades</h3>
+              <p class="text-3xl font-bold text-green-700">A-</p>
+              <p class="text-sm text-gray-600">Average</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Attendance</h3>
+              <p class="text-3xl font-bold text-purple-700">95%</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">My Subjects</h2>
+              <div class="space-y-3">
+                ${['Mathematics', 'English', 'Science', 'Social Studies', 'Kinyarwanda'].map(subject => `
+                  <button onclick="viewSubject('${subject}')" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <span class="font-semibold text-gray-900">${subject}</span>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Activities</h2>
+              <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                  <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                  <div>
+                    <p class="font-semibold text-gray-900">Math homework submitted</p>
+                    <p class="text-sm text-gray-600">2 hours ago</p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <i class="fas fa-book text-blue-600 mt-1"></i>
+                  <div>
+                    <p class="font-semibold text-gray-900">New Science notes available</p>
+                    <p class="text-sm text-gray-600">1 day ago</p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <i class="fas fa-star text-yellow-500 mt-1"></i>
+                  <div>
+                    <p class="font-semibold text-gray-900">Great performance in English test</p>
+                    <p class="text-sm text-gray-600">3 days ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function viewSubject(subject) {
+      showToast(`Viewing ${subject} - Access notes, homework, and learning materials`, 'success');
+    }
+
+    function renderParentDashboard() {
+      document.getElementById('page-content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Parent Dashboard</h1>
+            <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">My Children</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="border border-gray-200 rounded-lg p-6">
+                <div class="flex items-center mb-4">
+                  <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-user text-3xl text-blue-700"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold text-gray-900">John Doe</h3>
+                    <p class="text-gray-600">Class P5</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p class="text-sm text-gray-600">Average Grade</p>
+                    <p class="text-2xl font-bold text-green-700">A-</p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-600">Attendance</p>
+                    <p class="text-2xl font-bold text-blue-700">95%</p>
+                  </div>
+                </div>
+                <button onclick="viewChildDetails('John')" class="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Updates</h2>
+              <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                  <i class="fas fa-clipboard-check text-green-600 mt-1"></i>
+                  <div>
+                    <p class="font-semibold text-gray-900">Math homework submitted</p>
+                    <p class="text-sm text-gray-600">John Doe - 2 hours ago</p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <i class="fas fa-trophy text-yellow-500 mt-1"></i>
+                  <div>
+                    <p class="font-semibold text-gray-900">Excellent English test score</p>
+                    <p class="text-sm text-gray-600">John Doe - 1 day ago</p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <i class="fas fa-bell text-blue-600 mt-1"></i>
+                  <div>
+                    <p class="font-semibold text-gray-900">School event next week</p>
+                    <p class="text-sm text-gray-600">2 days ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+              <div class="space-y-3">
+                <button onclick="viewReportCard()" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                  <span class="font-semibold text-gray-900"><i class="fas fa-file-alt mr-2"></i>View Report Card</span>
+                  <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+                <button onclick="viewHomework()" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                  <span class="font-semibold text-gray-900"><i class="fas fa-book mr-2"></i>View Homework</span>
+                  <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+                <button onclick="contactTeacher()" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                  <span class="font-semibold text-gray-900"><i class="fas fa-envelope mr-2"></i>Contact Teacher</span>
+                  <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function viewChildDetails(name) {
+      showToast(`Viewing detailed information for ${name}`, 'success');
+    }
+
+    function viewReportCard() {
+      showToast('Report card viewing feature - Access your child\'s academic reports', 'success');
+    }
+
+    function viewHomework() {
+      showToast('Homework tracking feature - Monitor your child\'s homework assignments', 'success');
+    }
+
+    function contactTeacher() {
+      showToast('Teacher communication feature - Send messages to your child\'s teachers', 'success');
+    }
+
+    async function init() {
+      const initResult = await window.dataSdk.init(dataHandler);
+      if (!initResult.isOk) {
+        console.error('Failed to initialize data SDK');
+        return;
+      }
+
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (value) => {
+                  config.primary_color = value;
+                  window.elementSdk.setConfig({ primary_color: value });
+                }
+              },
+              {
+                get: () => config.secondary_color || defaultConfig.secondary_color,
+                set: (value) => {
+                  config.secondary_color = value;
+                  window.elementSdk.setConfig({ secondary_color: value });
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  config.text_color = value;
+                  window.elementSdk.setConfig({ text_color: value });
+                }
+              },
+              {
+                get: () => config.accent_color || defaultConfig.accent_color,
+                set: (value) => {
+                  config.accent_color = value;
+                  window.elementSdk.setConfig({ accent_color: value });
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  config.surface_color = value;
+                  window.elementSdk.setConfig({ surface_color: value });
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['school_name', config.school_name || defaultConfig.school_name],
+            ['school_tagline', config.school_tagline || defaultConfig.school_tagline],
+            ['contact_phone', config.contact_phone || defaultConfig.contact_phone],
+            ['school_hours', config.school_hours || defaultConfig.school_hours],
+            ['location', config.location || defaultConfig.location],
+            ['welcome_heading', config.welcome_heading || defaultConfig.welcome_heading],
+            ['welcome_text', config.welcome_text || defaultConfig.welcome_text]
+          ])
+        });
+      }
+
+      showPage('home');
+    }
+
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b888d7364c0739a',t:'MTc2NzUwNjgxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
